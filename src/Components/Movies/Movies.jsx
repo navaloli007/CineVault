@@ -2,14 +2,28 @@ import { useEffect, useState } from "react";
 import Spinner from "../Common/Spinner/Spinner";
 import axios from "axios";
 import MovieCard from "../MovieCard/MovieCard";
+import Pagination from "../Pagination/Pagination";
 
-const Movies = () => {
+const Movies = (props) => {
+  const { watchList, addToWatchList, removeFromWatchList } = props;
+
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pageNumber, setPageNumber] = useState(1);
+
+  const previousPageFn = function () {
+    if (pageNumber > 1) {
+      setPageNumber(pageNumber - 1);
+    }
+  };
+  const nextPageFn = function () {
+    setPageNumber(pageNumber + 1);
+  };
 
   const fetchMovieData = async () => {
+    setLoading(true);
     const res = await axios.get(
-      "https://api.themoviedb.org/3/trending/movie/day?api_key=185e0e909a0b535f76777465f3994605"
+      `https://api.themoviedb.org/3/trending/movie/day?api_key=185e0e909a0b535f76777465f3994605&page=${pageNumber}`
     );
     let movies = res.data.results;
     setMovies(movies);
@@ -17,7 +31,7 @@ const Movies = () => {
   };
   useEffect(() => {
     fetchMovieData();
-  }, []);
+  }, [pageNumber]);
   if (loading) {
     return <Spinner />;
   }
@@ -27,10 +41,23 @@ const Movies = () => {
         <h1>Trending Movies</h1>
         <div className="flex flex-wrap gap-8 mt-5 justify-evenly align-center">
           {movies.map((movieObj, index) => {
-            return <MovieCard key={index} movieObj={movieObj} />;
+            return (
+              <MovieCard
+                watchList={watchList}
+                addToWatchList={addToWatchList}
+                removeFromWatchList={removeFromWatchList}
+                key={index}
+                movieObj={movieObj}
+              />
+            );
           })}
         </div>
       </div>
+      <Pagination
+        previousPageFn={previousPageFn}
+        nextPageFn={nextPageFn}
+        pageNumber={pageNumber}
+      />
     </div>
   );
 };
