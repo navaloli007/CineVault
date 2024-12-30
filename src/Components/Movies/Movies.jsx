@@ -4,9 +4,7 @@ import axios from "axios";
 import MovieCard from "../MovieCard/MovieCard";
 import Pagination from "../Pagination/Pagination";
 
-const Movies = (props) => {
-  const { watchList, addToWatchList, removeFromWatchList } = props;
-
+const Movies = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
@@ -41,15 +39,7 @@ const Movies = (props) => {
         <h1>Trending Movies</h1>
         <div className="flex flex-wrap gap-8 mt-5 justify-evenly align-center">
           {movies.map((movieObj, index) => {
-            return (
-              <MovieCard
-                watchList={watchList}
-                addToWatchList={addToWatchList}
-                removeFromWatchList={removeFromWatchList}
-                key={index}
-                movieObj={movieObj}
-              />
-            );
+            return <MovieCard key={index} movieObj={movieObj} />;
           })}
         </div>
       </div>
