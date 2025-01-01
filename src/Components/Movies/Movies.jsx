@@ -1,55 +1,58 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Spinner from "../Common/Spinner/Spinner";
-import axios from "axios";
 import MovieCard from "../MovieCard/MovieCard";
 import Pagination from "../Pagination/Pagination";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchMovies,
+  nextPageFn,
+  previousPageFn,
+} from "../../redux/slice/moviesSlice";
 
-const Movies = () => {
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [pageNumber, setPageNumber] = useState(1);
+function Movies() {
+  const { movies, loading, pageNumber } = useSelector(
+    (state) => state.moviesState
+  );
+  const dispatch = useDispatch();
 
-  const previousPageFn = function () {
+  //ComponentDidMount (after first initial render) + ComponentDidUpdate(Every time page Number state is updated )
+  useEffect(() => {
+    dispatch(fetchMovies(pageNumber));
+  }, [dispatch, pageNumber]);
+
+  const handlePreviousPage = function () {
     if (pageNumber > 1) {
-      setPageNumber(pageNumber - 1);
+      dispatch(previousPageFn());
     }
   };
-  const nextPageFn = function () {
-    setPageNumber(pageNumber + 1);
+
+  const handleNextPage = function () {
+    dispatch(nextPageFn());
   };
 
-  const fetchMovieData = async () => {
-    setLoading(true);
-    const res = await axios.get(
-      `https://api.themoviedb.org/3/trending/movie/day?api_key=185e0e909a0b535f76777465f3994605&page=${pageNumber}`
-    );
-    let movies = res.data.results;
-    setMovies(movies);
-    setLoading(false);
-  };
-  useEffect(() => {
-    fetchMovieData();
-  }, [pageNumber]);
   if (loading) {
     return <Spinner />;
   }
+
   return (
     <div>
       <div className="text-2xl font-bold m-5">
-        <h1>Trending Movies</h1>
-        <div className="flex flex-wrap gap-8 mt-5 justify-evenly align-center">
-          {movies.map((movieObj, index) => {
-            return <MovieCard key={index} movieObj={movieObj} />;
+        <h1> Trending Movies </h1>
+
+        <div className="flex flex-wrap gap-8 justify-evenly align-center mt-5">
+          {movies.map((movieObj, idx) => {
+            return <MovieCard key={idx} movieObj={movieObj} />;
           })}
         </div>
       </div>
+
       <Pagination
-        previousPageFn={previousPageFn}
-        nextPageFn={nextPageFn}
         pageNumber={pageNumber}
+        previousPageFn={() => dispatch(handlePreviousPage)}
+        nextPageFn={() => dispatch(handleNextPage)}
       />
     </div>
   );
-};
+}
 
 export default Movies;

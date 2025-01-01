@@ -2,18 +2,16 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 const Banner = () => {
   const [bannerImage, setBannerImage] = useState(
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/991px-Placeholder_view_vector.svg.png"
+    `${import.meta.env.VITE_SIMMER_BACKGROUNG}`
   );
   const [movieTitle, setMovieTitle] = useState("");
   const fetchMovieData = async () => {
-    const res = await axios.get(
-      "https://api.themoviedb.org/3/trending/movie/day?api_key=185e0e909a0b535f76777465f3994605"
-    );
+    const res = await axios.get(`${import.meta.env.VITE_TRENDING_MOVIES}`);
     const requiredMovieIndex = getRandomInt(0, 19);
     let movie = res.data.results[requiredMovieIndex];
     let moviePoster = movie.backdrop_path;
     let movieTitle = movie.title;
-    setBannerImage(`https://image.tmdb.org/t/p/original/${moviePoster}`);
+    setBannerImage(`${import.meta.env.VITE_ORIGINAL}${moviePoster}`);
     setMovieTitle(movieTitle);
   };
   useEffect(() => {

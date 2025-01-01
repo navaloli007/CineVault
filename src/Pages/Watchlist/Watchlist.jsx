@@ -14,7 +14,6 @@ const Watchlist = () => {
   const [searchValue, setSearchValue] = useState("");
 
   movies.forEach((movie) => {
-    console.log(movie.title);
     const genreId = movie.genre_ids;
     genreId.forEach((id) => {
       genreSet.add(genreIdMappings[id]);
@@ -90,7 +89,9 @@ const Watchlist = () => {
                   <td className="flex items-center">
                     <img
                       className="h-[15rem] w-[12rem] object-fit"
-                      src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
+                      src={`${import.meta.env.VITE_ORIGINAL}${
+                        movie.poster_path
+                      }`}
                     />
                     <div className="px-10 font-medium"> {movie.title} </div>
                   </td>

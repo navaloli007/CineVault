@@ -3,14 +3,14 @@ import { watchListContext } from "../../App";
 
 const MovieCard = (props) => {
   const { movieObj } = props;
-  
+
   const watchListContextVal = useContext(watchListContext);
-  console.log(watchListContextVal);
-  const { watchList, addToWatchList, removeFromWatchList } = watchListContextVal;
+  const { watchList, addToWatchList, removeFromWatchList } =
+    watchListContextVal;
 
   let moviePoster = movieObj.backdrop_path;
   let movieTitle = movieObj.title;
-  const moviePosterUrl = `https://image.tmdb.org/t/p/original/${moviePoster}`;
+  const moviePosterUrl = `${import.meta.env.VITE_ORIGINAL}${moviePoster}`;
   let isMovieInWatchList = watchList.find((watchListMovie) => {
     return watchListMovie.id === movieObj.id;
   });
